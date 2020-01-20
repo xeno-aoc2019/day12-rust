@@ -37,7 +37,11 @@ impl Moon {
         let x = axis_adjustment(self.x, other.x);
         let y = axis_adjustment(self.y, other.y);
         let z = axis_adjustment(self.z, other.z);
-        (x,y,z)
+        (x, y, z)
+    }
+
+    pub fn new(coords: (i32, i32, i32)) -> Moon {
+        Moon { x: coords.0, y: coords.1, z: coords.2 }
     }
 }
 
