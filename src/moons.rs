@@ -24,9 +24,9 @@ impl Moon {
         for other in others {
             if self != other {
                 let moon_adj = self.adjustment(other);
-                let dx = (adjustment.0 + moon_adj.0);
-                let dy = (adjustment.1 + moon_adj.1);
-                let dz = (adjustment.2 + moon_adj.2);
+                let dx = adjustment.0 + moon_adj.0;
+                let dy = adjustment.1 + moon_adj.1;
+                let dz = adjustment.2 + moon_adj.2;
                 adjustment = (dx, dy, dz);
             }
         }
