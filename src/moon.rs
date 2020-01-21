@@ -5,6 +5,16 @@ pub struct Moon {
     z: i32,
 }
 
+#[derive(Copy, Debug, Clone)]
+pub struct MoonState {
+    moon: Moon,
+    velocity: (i32, i32, i32),
+}
+
+pub struct MoonStates {
+    moons: Vec<MoonState>,
+}
+
 impl PartialEq for Moon {
     fn eq(&self, other: &Self) -> bool {
         self.x == other.x && self.y == other.y && self.x == other.x
@@ -42,6 +52,21 @@ impl Moon {
 
     pub fn new(coords: (i32, i32, i32)) -> Moon {
         Moon { x: coords.0, y: coords.1, z: coords.2 }
+    }
+}
+
+impl MoonState {
+    fn new(moon: &Moon) -> MoonState {
+        MoonState {
+            moon: moon.clone(),
+            velocity: (0,0,0),
+        }
+    }
+}
+
+impl MoonStates {
+    fn new(moons: &Vec<Moon>) -> MoonStates {
+        MoonStates { moons: moons.clone().into_iter().map(|moon|MoonState::new(&moon)).collect() }
     }
 }
 

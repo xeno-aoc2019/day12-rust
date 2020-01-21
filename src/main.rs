@@ -1,7 +1,7 @@
 mod input;
-mod moons;
+mod moon;
 
-use moons::Moon;
+use moon::Moon;
 
 fn main() {
     let moons: Vec<Moon> = input::get_moons("input.txt").into_iter().map(|c| Moon::new(c)).collect();
