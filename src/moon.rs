@@ -1,3 +1,6 @@
+use std::fmt;
+use std::fmt::Formatter;
+
 #[derive(Copy, Debug, Eq, Clone)]
 pub struct Moon {
     x: i32,
@@ -5,11 +8,24 @@ pub struct Moon {
     z: i32,
 }
 
+impl fmt::Display for Moon {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "Moon(x={} y={} z={})", self.x, self.y, self.z)
+    }
+}
+
 #[derive(Copy, Debug, Clone)]
 pub struct MoonState {
     moon: Moon,
     velocity: (i32, i32, i32),
 }
+
+impl fmt::Display for MoonState {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "MoonState({}, velocity=({},{},{}))", self.moon, self.velocity.0, self.velocity.1, self.velocity.2)
+    }
+}
+
 
 pub struct MoonStates {
     moons: Vec<MoonState>,
@@ -59,14 +75,14 @@ impl MoonState {
     fn new(moon: &Moon) -> MoonState {
         MoonState {
             moon: moon.clone(),
-            velocity: (0,0,0),
+            velocity: (0, 0, 0),
         }
     }
 }
 
 impl MoonStates {
     fn new(moons: &Vec<Moon>) -> MoonStates {
-        MoonStates { moons: moons.clone().into_iter().map(|moon|MoonState::new(&moon)).collect() }
+        MoonStates { moons: moons.clone().into_iter().map(|moon| MoonState::new(&moon)).collect() }
     }
 }
 
