@@ -27,14 +27,22 @@ impl fmt::Display for MoonState {
 }
 
 
+#[derive(Debug, Clone)]
 pub struct MoonStates {
-    moons: Vec<MoonState>,
+    states: Vec<MoonState>,
 }
 
 impl PartialEq for Moon {
     fn eq(&self, other: &Self) -> bool {
         self.x == other.x && self.y == other.y && self.x == other.x
     }
+}
+
+fn add3(a: &(i32, i32, i32), b: &(i32, i32, i32)) -> (i32, i32, i32) {
+    let x = a.0.clone() + b.0.clone();
+    let y = a.1.clone() + b.1.clone();
+    let z = a.2.clone() + b.2.clone();
+    (x, y, z)
 }
 
 impl Moon {
@@ -47,17 +55,19 @@ impl Moon {
 
     pub fn adjustments(&self, others: &Vec<Moon>) -> (i32, i32, i32) {
         let mut adjustment = (0, 0, 0);
+        println!("Adjustment for {}", &self);
         for other in others {
-            if self != other {
-                let moon_adj = self.adjustment(other);
-                let dx = adjustment.0 + moon_adj.0;
-                let dy = adjustment.1 + moon_adj.1;
-                let dz = adjustment.2 + moon_adj.2;
-                adjustment = (dx, dy, dz);
-            }
+//            if self != other {
+            let moon_adj = self.adjustment(other);
+            println!("  {} :: {} : ({},{},{})", &self, &other, &moon_adj.0, &moon_adj.1, &moon_adj.2);
+            // adjustment = (dx, dy, dz);
+            adjustment = add3(&adjustment, &moon_adj);
+//            }
         }
+        println!("{} : adjustment: {:?}", &self, &adjustment);
         adjustment
     }
+
 
     fn adjustment(&self, other: &Moon) -> (i32, i32, i32) {
         let x = axis_adjustment(self.x, other.x);
@@ -72,22 +82,77 @@ impl Moon {
 }
 
 impl MoonState {
-    fn new(moon: &Moon) -> MoonState {
+    pub fn new(moon: &Moon) -> MoonState {
         MoonState {
             moon: moon.clone(),
             velocity: (0, 0, 0),
         }
     }
+    pub fn newWithVelo(moon: &Moon, velo: &(i32, i32, i32)) -> MoonState {
+        MoonState {
+            moon: moon.clone(),
+            velocity: velo.clone(),
+        }
+    }
+    pub fn energy(&self) -> i32 {
+        let potential = self.moon.x.abs() + self.moon.y.abs() + self.moon.z.abs();
+        let kinetic = self.velocity.0.abs() + self.velocity.1.abs() + self.velocity.2.abs();
+        potential * kinetic
+    }
 }
 
+impl fmt::Display for MoonStates {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", "Moonstates {\n");
+        for s in self.states.clone() {
+            write!(f, "  {}\n", s);
+        }
+        write!(f, "{}", "}")
+    }
+}
+
+
 impl MoonStates {
-    fn new(moons: &Vec<Moon>) -> MoonStates {
-        MoonStates { moons: moons.clone().into_iter().map(|moon| MoonState::new(&moon)).collect() }
+    pub fn new(moons: &Vec<Moon>) -> MoonStates {
+        MoonStates { states: moons.clone().into_iter().map(|moon| MoonState::new(&moon)).collect() }
+    }
+    pub fn moons(&self) -> Vec<Moon> {
+        self.states.clone().into_iter().map(|state| state.moon).collect()
+    }
+
+    pub fn nextStates(&self) -> MoonStates {
+        let mut result: Vec<MoonState> = vec!();
+        let moons = self.moons();
+        for state in self.states.clone() {
+            let adjustment = state.moon.adjustments(&moons);
+            let veloX = state.velocity.0 + adjustment.0;
+            let veloY = state.velocity.1 + adjustment.1;
+            let veloZ = state.velocity.2 + adjustment.2;
+            let newVelocity = (veloX, veloY, veloZ);
+            let newMoon = state.moon.adjust(&newVelocity);
+            let newState = MoonState { moon: newMoon, velocity: newVelocity };
+            result.push(newState);
+        }
+
+        MoonStates { states: result }
+    }
+
+    pub fn energy(&self) -> i32 {
+        let mut e = 0;
+        for ms in self.states.clone() {
+            e = e + ms.energy();
+            println!("Adding moon energy: {} ", e);
+        }
+        e
     }
 }
 
 fn axis_adjustment(value: i32, other: i32) -> i32 {
-    if other < value { return -1; }
-    if other > value { return 1; }
-    return 0;
+    let result = match value {
+        x if x > other => -1,
+        x if x < other => 1,
+        default => 0
+    };
+//    println!("axis_adjustment: value={}, other={} => {}", value, other, result);
+    result
 }
