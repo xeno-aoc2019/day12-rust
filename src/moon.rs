@@ -141,7 +141,7 @@ impl MoonStates {
         let mut e = 0;
         for ms in self.states.clone() {
             e = e + ms.energy();
-            println!("Adding moon energy: {} ", e);
+//            println!("Adding moon energy: {} ", e);
         }
         e
     }

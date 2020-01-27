@@ -12,12 +12,11 @@ fn processTimes(states: &MoonStates, count: usize) -> moon::MoonStates {
 }
 
 
-
 fn main() {
     let moons = getTaskInput();
     let testMoons = makeTestInput();
-//    processInput(moons);
-    processTest(&testMoons);
+    processInput(moons);
+//    processTest(&testMoons);
 }
 
 fn processTest(moons: &Vec<Moon>) {
@@ -29,8 +28,8 @@ fn processTest(moons: &Vec<Moon>) {
     println!("T2 : {}", t2);
     let t3 = t2.nextStates();
     println!("T3 : {}", t3);
-    // let t10 = processTimes(&t0, 10);
-    // println!("T10: {} energy={}", t10, t10.energy());
+    let t10 = processTimes(&t0, 10);
+    println!("T10: {} energy={}", t10, t10.energy());
 }
 
 fn makeTestInput() -> Vec<Moon> {
@@ -50,7 +49,8 @@ fn getTaskInput() -> Vec<Moon> {
 fn processInput(moons: Vec<Moon>) {
     let moonStates = MoonStates::new(&moons);
     println!("Initial: {}", moonStates);
-    let step100 = processTimes(&moonStates, 100);
+    let step100 = processTimes(&moonStates, 1000);
     println!("step100:");
-    println!("{}", step100);
+    println!("{}", &step100);
+    println!("Energy: {}", &step100.energy())
 }
