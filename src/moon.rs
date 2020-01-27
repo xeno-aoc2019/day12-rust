@@ -1,7 +1,7 @@
 use std::fmt;
 use std::fmt::Formatter;
 
-#[derive(Copy, Debug, Eq, Clone)]
+#[derive(Copy, Debug, Eq, Clone, Hash)]
 pub struct Moon {
     x: i32,
     y: i32,
@@ -14,7 +14,7 @@ impl fmt::Display for Moon {
     }
 }
 
-#[derive(Copy, Debug, Clone)]
+#[derive(Copy, Debug, Clone, Eq, Hash)]
 pub struct MoonState {
     moon: Moon,
     velocity: (i32, i32, i32),
@@ -26,8 +26,16 @@ impl fmt::Display for MoonState {
     }
 }
 
+impl PartialEq for MoonState {
+    fn eq(&self, other: &Self) -> bool {
+        let e1 = self.moon == other.moon;
+        let e2 = self.velocity == other.velocity;
+        e1 && e2
+    }
+}
 
-#[derive(Debug, Clone)]
+
+#[derive(Debug, Clone, Eq, Hash)]
 pub struct MoonStates {
     states: Vec<MoonState>,
 }
@@ -108,6 +116,16 @@ impl fmt::Display for MoonStates {
             write!(f, "  {}\n", s);
         }
         write!(f, "{}", "}")
+    }
+}
+
+impl PartialEq for MoonStates {
+    fn eq(&self, other: &Self) -> bool {
+        let e1 = self.states[0] == other.states[0];
+        let e2 = self.states[1] == other.states[1];
+        let e3 = self.states[2] == other.states[2];
+        let e4 = self.states[3] == other.states[3];
+        e1 && e2 && e3 && e4
     }
 }
 

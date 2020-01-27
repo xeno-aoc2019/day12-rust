@@ -17,6 +17,8 @@ fn main() {
     let testMoons = makeTestInput();
     processInput(moons);
 //    processTest(&testMoons);
+    println!("Should be true:  {}", ((1,2,3) == (1,2,3)));
+    println!("Should be false: {}", ((1,2,2) == (1,2,3)));
 }
 
 fn processTest(moons: &Vec<Moon>) {
