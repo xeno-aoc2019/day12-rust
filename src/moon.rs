@@ -37,6 +37,7 @@ impl PartialEq for MoonState {
 
 #[derive(Debug, Clone, Eq, Hash)]
 pub struct MoonStates {
+    step: u32,
     states: Vec<MoonState>,
 }
 
@@ -112,6 +113,7 @@ impl MoonState {
 impl fmt::Display for MoonStates {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "{}", "Moonstates {\n");
+        write!(f, "  step: {}\n", &self.step);
         for s in self.states.clone() {
             write!(f, "  {}\n", s);
         }
@@ -132,7 +134,7 @@ impl PartialEq for MoonStates {
 
 impl MoonStates {
     pub fn new(moons: &Vec<Moon>) -> MoonStates {
-        MoonStates { states: moons.clone().into_iter().map(|moon| MoonState::new(&moon)).collect() }
+        MoonStates { step: 0, states: moons.clone().into_iter().map(|moon| MoonState::new(&moon)).collect() }
     }
     pub fn moons(&self) -> Vec<Moon> {
         self.states.clone().into_iter().map(|state| state.moon).collect()
@@ -152,7 +154,7 @@ impl MoonStates {
             result.push(newState);
         }
 
-        MoonStates { states: result }
+        MoonStates { step: self.step + 1, states: result }
     }
 
     pub fn energy(&self) -> i32 {
