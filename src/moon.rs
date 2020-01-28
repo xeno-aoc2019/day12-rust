@@ -64,16 +64,16 @@ impl Moon {
 
     pub fn adjustments(&self, others: &Vec<Moon>) -> (i32, i32, i32) {
         let mut adjustment = (0, 0, 0);
-        println!("Adjustment for {}", &self);
+        // println!("Adjustment for {}", &self);
         for other in others {
 //            if self != other {
             let moon_adj = self.adjustment(other);
-            println!("  {} :: {} : ({},{},{})", &self, &other, &moon_adj.0, &moon_adj.1, &moon_adj.2);
+            // println!("  {} :: {} : ({},{},{})", &self, &other, &moon_adj.0, &moon_adj.1, &moon_adj.2);
             // adjustment = (dx, dy, dz);
             adjustment = add3(&adjustment, &moon_adj);
 //            }
         }
-        println!("{} : adjustment: {:?}", &self, &adjustment);
+        // println!("{} : adjustment: {:?}", &self, &adjustment);
         adjustment
     }
 

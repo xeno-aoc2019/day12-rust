@@ -2,6 +2,7 @@ mod input;
 mod moon;
 
 use moon::{Moon, MoonState, MoonStates};
+use std::collections::HashSet;
 
 fn processTimes(states: &MoonStates, count: usize) -> moon::MoonStates {
     if count > 0 {
@@ -15,13 +16,14 @@ fn processTimes(states: &MoonStates, count: usize) -> moon::MoonStates {
 fn main() {
     let moons = getTaskInput();
     let testMoons = makeTestInput();
-    processInput(moons);
+//    process_1000(moons);
+    find_loop(moons);
 //    processTest(&testMoons);
-    println!("Should be true:  {}", ((1,2,3) == (1,2,3)));
-    println!("Should be false: {}", ((1,2,2) == (1,2,3)));
+    println!("Should be true:  {}", ((1, 2, 3) == (1, 2, 3)));
+    println!("Should be false: {}", ((1, 2, 2) == (1, 2, 3)));
 }
 
-fn processTest(moons: &Vec<Moon>) {
+fn process_test(moons: &Vec<Moon>) {
     let t0 = MoonStates::new(&moons);
     let t1 = t0.nextStates();
     let t2 = t1.nextStates();
@@ -48,7 +50,19 @@ fn getTaskInput() -> Vec<Moon> {
     moons
 }
 
-fn processInput(moons: Vec<Moon>) {
+fn find_loop(moons: Vec<Moon>) {
+    let mut moonStates = MoonStates::new(&moons);
+    let mut prevs: HashSet<MoonStates> = HashSet::new();
+    while !prevs.contains(&moonStates) {
+        prevs.insert(moonStates.clone());
+        moonStates = moonStates.nextStates();
+    }
+    let loopStart = prevs.get(&moonStates);
+    println!("Loop start: {}", loopStart.unwrap());
+    println!("Loop end:   {}", moonStates);
+}
+
+fn process_1000(moons: Vec<Moon>) {
     let moonStates = MoonStates::new(&moons);
     println!("Initial: {}", moonStates);
     let step100 = processTimes(&moonStates, 1000);
